@@ -1,0 +1,2116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, viewport-fit=cover"/>
+  <title>I am sorry Devi Ji 😢❤️</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@400;700;900&family=Cinzel:wght@400;600;700&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Orbitron:wght@400;700;900&display=swap" rel="stylesheet"/>
+  <style>
+    *, *::before, *::after { box-sizing:border-box; margin:0; padding:0; }
+
+    /* ══════════════════════════════════════════
+       LOADING SCREEN  —  kinetic glitch style
+    ══════════════════════════════════════════ */
+    #loader {
+      position:fixed; inset:0; z-index:99999;
+      background-image: url('loader-bg.png');
+      background-size: contain;
+      background-position: center center;
+      background-repeat: no-repeat;
+      background-color: #000;
+      display:flex; flex-direction:column;
+      align-items:center; justify-content:center;
+      overflow:hidden;
+      /* Visible by default — enter screen (z:100000) sits on top of it */
+      opacity:1; visibility:visible;
+      transition:opacity .85s ease, visibility .85s ease;
+    }
+    #loader.hide { opacity:0; visibility:hidden; pointer-events:none; }
+
+    /* Dark overlay so glitch text is visible over the photo */
+    #loader::before {
+      content:''; position:absolute; inset:0; z-index:1;
+      background: linear-gradient(
+        160deg,
+        rgba(0,0,0,0.72) 0%,
+        rgba(10,2,30,0.65) 40%,
+        rgba(0,0,0,0.78) 100%
+      );
+    }
+
+    /* scanlines */
+    #loader::after {
+      content:''; position:absolute; inset:0; pointer-events:none; z-index:2;
+      background:repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(255,255,255,.016) 2px,rgba(255,255,255,.016) 4px);
+    }
+
+    /* HUD corners */
+    .hud-corner {
+      position:absolute; z-index:3;
+      font-family:'Orbitron',monospace;
+      font-size:clamp(.5rem,.8vw,.7rem);
+      color:rgba(255,255,255,.32); letter-spacing:.14em; text-transform:uppercase;
+    }
+    .hud-tl { top:20px; left:22px; }
+    .hud-tr { top:20px; right:22px; text-align:right; }
+    .hud-bl { bottom:22px; left:22px; }
+    .hud-br { bottom:22px; right:22px; display:flex; align-items:center; gap:10px; }
+
+    /* cross markers */
+    .hud-cross {
+      position:absolute; top:50%; transform:translateY(-50%);
+      color:rgba(255,255,255,.25); font-family:monospace; font-size:1rem; z-index:3;
+    }
+    .hud-cross.left  { left:22px; }
+    .hud-cross.right { right:22px; }
+
+    /* progress bar */
+    .loader-bar-wrap {
+      width:120px; height:2px;
+      background:rgba(255,255,255,.1);
+      border:1px solid rgba(255,255,255,.2);
+      border-radius:2px; overflow:hidden;
+    }
+    .loader-bar-fill {
+      height:100%; width:0%;
+      background:linear-gradient(90deg,#fff 0%,#ffe9aa 100%);
+      transition:width .07s linear;
+    }
+    .loader-pct {
+      font-family:'Orbitron',monospace; font-size:.58rem;
+      color:rgba(255,255,255,.38); min-width:34px; text-align:right;
+    }
+
+    /* centre group */
+    .loader-centre {
+      position:relative; z-index:3;
+      display:flex; flex-direction:column; align-items:center; gap:28px;
+    }
+
+    /* floating flower petals in loader */
+    .load-petal {
+      position:absolute; pointer-events:none;
+      font-size:1.4rem; opacity:0;
+      animation:loadPetalRise linear infinite;
+    }
+    @keyframes loadPetalRise {
+      0%   { transform:translateY(90px) scale(.5) rotate(0deg);   opacity:0; }
+      12%  { opacity:.9; }
+      88%  { opacity:.3; }
+      100% { transform:translateY(-180px) scale(1.15) rotate(360deg); opacity:0; }
+    }
+
+    /* glitch wrap */
+    .glitch-wrap {
+      position:relative; text-align:center;
+      animation:flashGlitch 3s infinite;
+    }
+    @keyframes flashGlitch {
+      0%,92%,100%{ opacity:1; }
+      93%{ opacity:0; }
+      94%{ opacity:1; }
+      95%{ opacity:0; }
+      96%{ opacity:1; }
+    }
+
+    /* base text */
+    .glitch-main {
+      font-family:'Orbitron',monospace; font-weight:900;
+      font-size:clamp(1.4rem,4.5vw,4rem);
+      color:#fff; letter-spacing:.12em; text-transform:uppercase;
+      display:block; line-height:1.15; white-space:nowrap; position:relative;
+    }
+
+    /* slice ghost layers */
+    .glitch-slice {
+      position:absolute; top:0; left:0; width:100%;
+      font-family:'Orbitron',monospace; font-weight:900;
+      font-size:clamp(1.4rem,4.5vw,4rem);
+      color:#fff; letter-spacing:.12em; text-transform:uppercase;
+      line-height:1.15; white-space:nowrap;
+    }
+    .s0{clip-path:polygon(0 0%,   100% 0%,   100% 12.5%,0 12.5%); animation:gs0 .56s steps(1) infinite;}
+    .s1{clip-path:polygon(0 12.5%,100% 12.5%,100% 25%,  0 25%);   animation:gs1 .43s steps(1) infinite;}
+    .s2{clip-path:polygon(0 25%,  100% 25%,  100% 37.5%,0 37.5%); animation:gs2 .61s steps(1) infinite;}
+    .s3{clip-path:polygon(0 37.5%,100% 37.5%,100% 50%,  0 50%);   animation:gs3 .37s steps(1) infinite;}
+    .s4{clip-path:polygon(0 50%,  100% 50%,  100% 62.5%,0 62.5%); animation:gs4 .51s steps(1) infinite;}
+    .s5{clip-path:polygon(0 62.5%,100% 62.5%,100% 75%,  0 75%);   animation:gs5 .47s steps(1) infinite;}
+    .s6{clip-path:polygon(0 75%,  100% 75%,  100% 87.5%,0 87.5%); animation:gs6 .58s steps(1) infinite;}
+    .s7{clip-path:polygon(0 87.5%,100% 87.5%,100% 100%, 0 100%);  animation:gs7 .42s steps(1) infinite;}
+
+    @keyframes gs0{0%{transform:translateX(0)}30%{transform:translateX(-16px)}65%{transform:translateX(9px)} 100%{transform:translateX(0)}}
+    @keyframes gs1{0%{transform:translateX(0)}20%{transform:translateX(20px)} 58%{transform:translateX(-7px)}100%{transform:translateX(0)}}
+    @keyframes gs2{0%{transform:translateX(0)}42%{transform:translateX(-11px)}72%{transform:translateX(14px)}100%{transform:translateX(0)}}
+    @keyframes gs3{0%{transform:translateX(0)}16%{transform:translateX(22px)} 52%{transform:translateX(-9px)}100%{transform:translateX(0)}}
+    @keyframes gs4{0%{transform:translateX(0)}36%{transform:translateX(-18px)}67%{transform:translateX(11px)}100%{transform:translateX(0)}}
+    @keyframes gs5{0%{transform:translateX(0)}26%{transform:translateX(13px)} 62%{transform:translateX(-16px)}100%{transform:translateX(0)}}
+    @keyframes gs6{0%{transform:translateX(0)}47%{transform:translateX(-9px)} 78%{transform:translateX(20px)}100%{transform:translateX(0)}}
+    @keyframes gs7{0%{transform:translateX(0)}11%{transform:translateX(17px)} 56%{transform:translateX(-13px)}100%{transform:translateX(0)}}
+
+    /* flower emoji row */
+    .flower-row {
+      font-size:1.9rem; letter-spacing:.2em;
+      animation:flowerPulse 1.1s ease-in-out infinite alternate;
+    }
+    @keyframes flowerPulse{
+      from{transform:scale(1);   opacity:.6;}
+      to  {transform:scale(1.12);opacity:1;}
+    }
+
+    .loader-please {
+      font-family:'Orbitron',monospace; font-size:.58rem;
+      color:rgba(255,255,255,.25); letter-spacing:.28em; text-transform:uppercase;
+    }
+
+    /* ══════════════════════════════════════════
+       MAIN PAGE
+    ══════════════════════════════════════════ */
+    :root {
+      --gold:        #d4a843;
+      --gold-light:  #f0d080;
+      --gold-dim:    #8a6a1a;
+      --crimson:     #8b0032;
+      --glass-border:rgba(212,168,67,0.35);
+      --card-w:      380px;
+      --card-h:      580px;
+    }
+
+    html, body {
+      height: 100%;
+      width: 100%;
+      max-width: 100vw;
+      overflow-x: hidden;
+      -webkit-tap-highlight-color: transparent;
+      touch-action: manipulation;
+    }
+
+    body {
+      min-height: 100vh;
+      min-height: 100dvh;
+      background: radial-gradient(ellipse at 20% 20%,#2a0a3e 0%,#0d0618 40%,#1a0510 70%,#0a0208 100%);
+      font-family: 'Cinzel', serif;
+      display: flex; flex-direction: column; align-items: center;
+      position: relative;
+    }
+
+    .stars {
+      position:fixed; inset:0; pointer-events:none; z-index:0;
+      background:
+        radial-gradient(1px 1px at 8%  12%,rgba(212,168,67,.9) 0%,transparent 100%),
+        radial-gradient(1px 1px at 22% 38%,rgba(255,255,255,.6) 0%,transparent 100%),
+        radial-gradient(1px 1px at 38% 7%, rgba(212,168,67,.8) 0%,transparent 100%),
+        radial-gradient(1px 1px at 52% 22%,rgba(255,255,255,.5) 0%,transparent 100%),
+        radial-gradient(1px 1px at 67% 10%,rgba(212,168,67,.7) 0%,transparent 100%),
+        radial-gradient(1px 1px at 83% 32%,rgba(255,255,255,.8) 0%,transparent 100%),
+        radial-gradient(1px 1px at 14% 58%,rgba(212,168,67,.6) 0%,transparent 100%),
+        radial-gradient(1px 1px at 29% 72%,rgba(255,255,255,.4) 0%,transparent 100%),
+        radial-gradient(1px 1px at 48% 53%,rgba(212,168,67,.9) 0%,transparent 100%),
+        radial-gradient(1px 1px at 63% 78%,rgba(255,255,255,.7) 0%,transparent 100%),
+        radial-gradient(2px 2px at 5%  88%,rgba(212,168,67,.8) 0%,transparent 100%),
+        radial-gradient(2px 2px at 74% 88%,rgba(212,168,67,.9) 0%,transparent 100%),
+        radial-gradient(2px 2px at 19% 48%,rgba(212,168,67,.6) 0%,transparent 100%),
+        radial-gradient(2px 2px at 89% 18%,rgba(255,255,255,.7) 0%,transparent 100%);
+    }
+
+    .orb{position:fixed;border-radius:50%;filter:blur(60px);pointer-events:none;z-index:0;animation:orbFloat 8s ease-in-out infinite;will-change:transform;}
+    .orb1{width:420px;height:420px;background:radial-gradient(circle,rgba(139,0,50,.4),transparent 70%);top:-120px;left:-120px;}
+    .orb2{width:320px;height:320px;background:radial-gradient(circle,rgba(45,18,96,.5),transparent 70%);top:40%;right:-100px;animation-delay:3s;}
+    .orb3{width:360px;height:360px;background:radial-gradient(circle,rgba(212,168,67,.12),transparent 70%);bottom:-120px;left:30%;animation-delay:6s;}
+    @keyframes orbFloat{0%,100%{transform:translate3d(0,0,0) scale(1);}50%{transform:translate3d(0,-24px,0) scale(1.03);}}
+
+    .side-bar{position:fixed;left:18px;top:50%;transform:translateY(-50%);display:flex;flex-direction:column;gap:14px;z-index:20;}
+    .side-icon{width:36px;height:36px;border-radius:10px;background:rgba(255,255,255,.07);border:1px solid rgba(212,168,67,.2);backdrop-filter:blur(12px);display:flex;align-items:center;justify-content:center;color:rgba(212,168,67,.6);font-size:1rem;cursor:pointer;transition:all .2s;}
+    .side-icon:hover{background:rgba(212,168,67,.18);color:var(--gold);border-color:var(--gold);}
+
+    /* header */
+    .crown-header{position:relative;z-index:10;text-align:center;padding:32px 20px 14px;width:100%;}
+    .crown-icon{font-size:2.8rem;margin-bottom:8px;display:block;animation:crownGlow 2s ease-in-out infinite alternate;}
+    @keyframes crownGlow{from{text-shadow:0 0 10px var(--gold),0 0 20px var(--gold-dim);}to{text-shadow:0 0 24px var(--gold),0 0 48px var(--gold),0 0 70px var(--gold-dim);}}
+    .site-title{font-family:'Cinzel Decorative',serif;font-size:clamp(1.3rem,4vw,2.6rem);font-weight:900;background:linear-gradient(135deg,var(--gold-light),var(--gold),#c8860a,var(--gold-light));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;letter-spacing:.12em;background-size:200% auto;animation:shimmer 3s linear infinite;}
+    @keyframes shimmer{0%{background-position:0% center;}100%{background-position:200% center;}}
+    .divider{display:flex;align-items:center;justify-content:center;gap:12px;margin:12px auto;max-width:480px;}
+    .divider-line{flex:1;height:1px;background:linear-gradient(90deg,transparent,var(--gold),transparent);}
+    .divider-gem{color:var(--gold);font-size:.9rem;}
+    .header-sub{font-family:'Cormorant Garamond',serif;font-style:italic;color:rgba(212,168,67,.55);font-size:.95rem;letter-spacing:.15em;}
+
+    /* carousel */
+    .carousel-outer{position:relative;z-index:10;width:100%;height:calc(var(--card-h) + 70px);display:flex;align-items:center;justify-content:center;overflow:hidden;margin:8px 0 20px;}
+    .card-stage{position:relative;width:var(--card-w);height:var(--card-h);perspective:1400px;perspective-origin:50% 50%;}
+
+    .card{position:absolute;width:var(--card-w);height:var(--card-h);border-radius:24px;overflow:hidden;background:#0d0618;border:1.5px solid var(--glass-border);box-shadow:0 32px 80px rgba(0,0,0,.65),0 0 0 1px rgba(212,168,67,.08),inset 0 1px 0 rgba(255,255,255,.12);transition:transform .65s cubic-bezier(.23,1,.32,1),opacity .5s,filter .5s,box-shadow .5s;will-change:transform;cursor:pointer;}
+    .card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;z-index:2;background:linear-gradient(90deg,var(--crimson),var(--gold),var(--crimson));}
+    .card-badge{position:absolute;top:14px;right:14px;z-index:3;background:rgba(10,2,20,.65);border:1px solid rgba(212,168,67,.45);backdrop-filter:blur(8px);border-radius:20px;padding:3px 12px;font-size:.7rem;color:var(--gold);letter-spacing:.08em;}
+    .card-img{width:100%;height:100%;object-fit:contain;object-position:center center;display:block;filter:drop-shadow(0 6px 20px rgba(0,0,0,.7));}
+    .card-placeholder{width:100%;height:100%;background:linear-gradient(160deg,rgba(45,18,96,.5),rgba(26,10,46,.8),rgba(139,0,50,.2));display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;}
+    .ph-icon{font-size:3.5rem;opacity:.55;}
+    .ph-label{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:.8rem;letter-spacing:.2em;color:rgba(212,168,67,.4);}
+
+    .card[data-state="active"]{transform:translateX(0) scale(1) rotateY(0deg) translateZ(0);opacity:1;filter:none;z-index:6;box-shadow:0 40px 100px rgba(0,0,0,.75),0 0 50px rgba(212,168,67,.22),inset 0 1px 0 rgba(255,255,255,.15);}
+    .card[data-state="prev"] {transform:translateX(-74%) scale(0.76) rotateY(26deg) translateZ(-80px);opacity:.72;filter:brightness(.62);z-index:4;}
+    .card[data-state="prev2"]{transform:translateX(-126%) scale(0.60) rotateY(36deg) translateZ(-160px);opacity:.38;filter:brightness(.4);z-index:3;}
+    .card[data-state="next"] {transform:translateX(74%) scale(0.76) rotateY(-26deg) translateZ(-80px);opacity:.72;filter:brightness(.62);z-index:4;}
+    .card[data-state="next2"]{transform:translateX(126%) scale(0.60) rotateY(-36deg) translateZ(-160px);opacity:.38;filter:brightness(.4);z-index:3;}
+    .card[data-state="hidden"]{opacity:0;pointer-events:none;z-index:1;transform:translateX(0) scale(0.5);}
+
+    /* nav */
+    .controls-wrap{position:relative;z-index:10;display:flex;flex-direction:column;align-items:center;gap:16px;padding-bottom:14px;}
+    .nav-bar{display:flex;align-items:center;gap:18px;background:rgba(255,255,255,.06);backdrop-filter:blur(20px);border:1px solid rgba(212,168,67,.28);border-radius:60px;padding:10px 22px;}
+    .nav-thumb{width:50px;height:50px;border-radius:50%;overflow:hidden;border:2px solid var(--gold);box-shadow:0 0 16px rgba(212,168,67,.4);flex-shrink:0;}
+    .nav-thumb img{width:100%;height:100%;object-fit:cover;object-position:center top;}
+    .nav-info{text-align:left;}
+    .nav-info-title{font-family:'Cinzel Decorative',serif;font-size:.75rem;color:var(--gold);letter-spacing:.08em;}
+    .nav-info-sub{font-family:'Cormorant Garamond',serif;font-size:.78rem;color:rgba(212,168,67,.55);font-style:italic;}
+    .nav-btn{width:36px;height:36px;border-radius:50%;background:rgba(212,168,67,.12);border:1px solid rgba(212,168,67,.4);color:var(--gold);font-size:1rem;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .2s;backdrop-filter:blur(8px);}
+    .nav-btn:hover{background:rgba(212,168,67,.3);box-shadow:0 0 16px rgba(212,168,67,.5);}
+    .heart-btn{background:rgba(139,0,50,.22);border-color:rgba(200,50,80,.5);color:#ff6b8a;font-size:1.1rem;animation:heartbeat 1.4s ease-in-out infinite;}
+    @keyframes heartbeat{0%,100%{transform:scale(1);}14%{transform:scale(1.22);}28%{transform:scale(1);}42%{transform:scale(1.16);}}
+
+    .dots{display:flex;gap:8px;}
+    .dot{width:8px;height:8px;border-radius:50%;background:rgba(212,168,67,.3);border:1px solid rgba(212,168,67,.5);cursor:pointer;transition:all .3s;}
+    .dot.active{background:var(--gold);width:24px;border-radius:4px;box-shadow:0 0 8px rgba(212,168,67,.7);}
+
+    .footer-tagline{position:relative;z-index:10;text-align:center;padding:16px 20px 28px;font-family:'Cormorant Garamond',serif;font-style:italic;font-size:.95rem;color:rgba(212,168,67,.45);letter-spacing:.1em;}
+
+    .petal{position:fixed;pointer-events:none;z-index:1;font-size:1rem;opacity:0;animation:petalFall linear infinite;will-change:transform;}
+    @keyframes petalFall{
+      0%   { transform:translate3d(0,-20px,0) rotate(0deg); opacity:0; }
+      10%  { opacity:.65; }
+      90%  { opacity:.3; }
+      100% { transform:translate3d(0,105vh,0) rotate(720deg); opacity:0; }
+    }
+
+    @keyframes fadeUp{from{opacity:0;transform:translate3d(0,24px,0);}to{opacity:1;transform:translate3d(0,0,0);}}
+    .fade-up{animation:fadeUp .8s ease forwards;will-change:transform,opacity;}
+
+    @media(min-width:1440px){
+      :root{--card-w:410px;--card-h:610px;}
+    }
+    @media(max-width:900px){
+      :root{--card-w:330px;--card-h:510px;}
+    }
+
+    /* ═════════════════════════════════════════════════════
+       ══ MOBILE & PHONE ULTRA-PERFORMANCE OPTIMIZATION ══
+       ═════════════════════════════════════════════════════ */
+    @media(max-width:768px){
+      /* Reduce heavy blur passes on mobile GPU */
+      .orb {
+        filter: blur(34px) !important;
+        opacity: 0.65;
+        will-change: transform;
+      }
+      .orb1 { width: 240px; height: 240px; top: -70px; left: -70px; }
+      .orb2 { width: 200px; height: 200px; right: -60px; }
+      .orb3 { width: 220px; height: 220px; bottom: -70px; }
+      .side-bar { display: none !important; }
+      
+      /* Lighten backdrop blur for silky 60/120fps scrolling on mobile chips */
+      .nav-bar, #muteBtn, #loginBtn, .letter-back-btn, .login-back-btn, #loginClose, .envelope-glow-tap {
+        backdrop-filter: blur(6px) !important;
+        -webkit-backdrop-filter: blur(6px) !important;
+      }
+    }
+
+    @media(max-width:600px){
+      :root {
+        --card-w: min(290px, 82vw);
+        --card-h: min(440px, 58vh);
+      }
+
+      /* Viewport & Header */
+      .crown-header {
+        padding: max(20px, calc(env(safe-area-inset-top) + 12px)) 14px 6px;
+      }
+      .crown-icon {
+        font-size: 2.2rem;
+        margin-bottom: 4px;
+      }
+      .site-title {
+        font-size: clamp(1.2rem, 5.2vw, 1.65rem);
+        letter-spacing: .08em;
+      }
+      .divider {
+        margin: 8px auto;
+        max-width: 300px;
+      }
+      .header-sub {
+        font-size: .8rem;
+        letter-spacing: .08em;
+      }
+
+      /* Carousel container */
+      .carousel-outer {
+        height: calc(var(--card-h) + 36px);
+        margin: 4px 0 10px;
+      }
+      .card-stage {
+        perspective: 900px;
+      }
+
+      /* Card styling & 3D layout on narrow screens */
+      .card {
+        border-radius: 20px;
+        box-shadow: 0 16px 40px rgba(0,0,0,0.7), inset 0 1px 0 rgba(255,255,255,0.1) !important;
+      }
+      .card[data-state="active"] {
+        transform: translate3d(0, 0, 0) scale(1) !important;
+        box-shadow: 0 20px 48px rgba(0,0,0,0.8), 0 0 25px rgba(212,168,67,0.25) !important;
+      }
+      .card[data-state="prev"] {
+        transform: translate3d(-52%, 0, -45px) scale(0.82) rotateY(16deg) !important;
+        opacity: 0.65 !important;
+        filter: brightness(0.65) !important;
+      }
+      .card[data-state="next"] {
+        transform: translate3d(52%, 0, -45px) scale(0.82) rotateY(-16deg) !important;
+        opacity: 0.65 !important;
+        filter: brightness(0.65) !important;
+      }
+      /* Hide 4th & 5th distant cards on small phones to save GPU memory & avoid viewport overflow */
+      .card[data-state="prev2"],
+      .card[data-state="next2"] {
+        transform: translate3d(0, 0, -120px) scale(0.5) !important;
+        opacity: 0 !important;
+        pointer-events: none !important;
+      }
+
+      /* Flip card shayari backside */
+      .flip-back {
+        padding: 18px 14px 16px;
+      }
+      .shayari-icon {
+        font-size: 1.25rem;
+        margin-bottom: 2px;
+      }
+      .shayari-divider {
+        margin: 6px 0;
+      }
+      .shayari-text {
+        font-size: clamp(0.78rem, 2.7vw, 0.94rem) !important;
+        line-height: 1.55 !important;
+      }
+      .shayari-tap-hint {
+        margin-top: 6px;
+        font-size: .62rem;
+      }
+
+      /* Nav controls */
+      .controls-wrap {
+        gap: 12px;
+        padding-bottom: 8px;
+      }
+      .nav-bar {
+        gap: 8px;
+        padding: 6px 12px;
+        border-radius: 40px;
+        max-width: 94vw;
+      }
+      .nav-thumb {
+        width: 38px;
+        height: 38px;
+      }
+      .nav-btn {
+        width: 38px;
+        height: 38px;
+        font-size: 1rem;
+        min-width: 38px;
+      }
+      .nav-info-title {
+        font-size: .68rem;
+      }
+      .nav-info-sub {
+        font-size: .72rem;
+      }
+      .dots {
+        gap: 6px;
+      }
+      .footer-tagline {
+        font-size: .8rem;
+        padding: 10px 14px 22px;
+        letter-spacing: .06em;
+      }
+
+      /* Fixed buttons safe area placement */
+      #loginBtn {
+        top: max(14px, env(safe-area-inset-top)) !important;
+        right: max(14px, env(safe-area-inset-right)) !important;
+        padding: 7px 15px !important;
+        font-size: .72rem !important;
+      }
+      #muteBtn {
+        bottom: max(16px, env(safe-area-inset-bottom)) !important;
+        left: max(16px, env(safe-area-inset-left)) !important;
+        width: 38px !important;
+        height: 38px !important;
+        font-size: 1rem !important;
+      }
+
+      /* Loader glitch sizing */
+      .glitch-main, .glitch-slice {
+        font-size: clamp(1.1rem, 5.5vw, 1.8rem) !important;
+      }
+      .flower-row {
+        font-size: 1.4rem;
+      }
+
+      /* Fullscreen Login Modal */
+      .login-box {
+        width: min(420px, 92vw) !important;
+        max-height: 88vh !important;
+        max-height: 88dvh !important;
+        overflow-y: auto !important;
+        -webkit-overflow-scrolling: touch;
+        border-radius: 20px !important;
+      }
+      .login-body {
+        padding: 22px 16px 18px !important;
+      }
+      .login-crown {
+        font-size: 1.9rem !important;
+      }
+      .login-title {
+        font-size: 1.15rem !important;
+      }
+      .login-sub {
+        font-size: .82rem !important;
+        margin-bottom: 14px !important;
+      }
+      .login-field {
+        margin-bottom: 14px !important;
+      }
+      .login-field input {
+        font-size: 16px !important; /* Critical: prevents iOS auto-zoom */
+        padding: 11px 14px !important;
+      }
+      #loginSubmit {
+        padding: 13px 20px !important;
+        font-size: .82rem !important;
+      }
+      .hint-box {
+        padding: 10px 12px !important;
+        font-size: .78rem !important;
+      }
+      .login-back-btn {
+        top: max(14px, env(safe-area-inset-top)) !important;
+        left: max(14px, env(safe-area-inset-left)) !important;
+        padding: 7px 14px !important;
+        font-size: .72rem !important;
+      }
+      #loginClose {
+        top: max(14px, env(safe-area-inset-top)) !important;
+        right: max(14px, env(safe-area-inset-right)) !important;
+        width: 38px !important;
+        height: 38px !important;
+      }
+
+      /* Royal Letter Page & Envelope */
+      #letterPage {
+        padding: max(60px, calc(env(safe-area-inset-top) + 20px)) 14px max(30px, env(safe-area-inset-bottom)) !important;
+        justify-content: flex-start !important;
+      }
+      .letter-back-btn {
+        top: max(14px, env(safe-area-inset-top)) !important;
+        left: max(14px, env(safe-area-inset-left)) !important;
+        padding: 7px 14px !important;
+        font-size: .72rem !important;
+      }
+      .letter-page-header {
+        margin-top: auto !important;
+        margin-bottom: 12px !important;
+      }
+      .letter-crown {
+        font-size: 2rem !important;
+      }
+      .letter-page-title {
+        font-size: clamp(1.2rem, 5vw, 1.6rem) !important;
+      }
+      .letter-page-sub {
+        font-size: .9rem !important;
+      }
+      .envelope-pop-container {
+        width: min(360px, 86vw) !important;
+        margin: 12px auto 20px !important;
+      }
+      .envelope-glow-tap {
+        font-size: .7rem !important;
+        padding: 6px 16px !important;
+        bottom: 14px !important;
+      }
+      .disclose-btn {
+        padding: 12px 24px !important;
+        font-size: .82rem !important;
+        letter-spacing: .12em !important;
+        margin-bottom: auto !important;
+      }
+
+      /* Royal Parchment Sheet Modal */
+      #unfoldedLetterModal {
+        padding: max(16px, env(safe-area-inset-top)) 10px max(16px, env(safe-area-inset-bottom)) !important;
+      }
+      .parchment-sheet {
+        width: min(560px, 94vw) !important;
+        max-height: 86vh !important;
+        max-height: 86dvh !important;
+        padding: 26px 16px 22px !important;
+        border-radius: 14px !important;
+        -webkit-overflow-scrolling: touch;
+      }
+      .parchment-inner-border {
+        inset: 7px !important;
+        border-radius: 10px !important;
+      }
+      .parchment-seal {
+        width: 44px !important;
+        height: 44px !important;
+        font-size: 1.35rem !important;
+        margin-bottom: 10px !important;
+      }
+      .parchment-title {
+        font-size: 1.12rem !important;
+      }
+      .parchment-subtitle {
+        font-size: .85rem !important;
+        margin-bottom: 14px !important;
+      }
+      .letter-divider {
+        margin: 10px 0 16px !important;
+      }
+      .letter-salutation {
+        font-size: 1.15rem !important;
+        margin-bottom: 8px !important;
+      }
+      .letter-body-content {
+        font-size: .98rem !important;
+        line-height: 1.7 !important;
+      }
+      .letter-dropcap {
+        font-size: 2.3rem !important;
+        padding-top: 2px !important;
+        padding-right: 6px !important;
+      }
+      .letter-paragraph {
+        margin-bottom: 12px !important;
+      }
+      .letter-closing {
+        font-size: 1.05rem !important;
+        margin-top: 16px !important;
+      }
+      .letter-closing strong {
+        font-size: .92rem !important;
+      }
+      .parchment-close-btn {
+        margin-top: 18px !important;
+        padding: 11px 22px !important;
+        font-size: .78rem !important;
+        min-height: 44px !important;
+      }
+    }
+    /* ── Mute toggle button ── */
+    #muteBtn {
+      position:fixed; bottom:22px; left:22px; z-index:500;
+      width:42px; height:42px; border-radius:50%;
+      background:rgba(212,168,67,.15);
+      border:1px solid rgba(212,168,67,.4);
+      backdrop-filter:blur(12px);
+      color:var(--gold); font-size:1.2rem;
+      cursor:pointer; display:flex; align-items:center; justify-content:center;
+      transition:all .25s; box-shadow:0 0 12px rgba(212,168,67,.2);
+      opacity:0; animation:fadeUp .6s ease 5s forwards;
+    }
+    #muteBtn:hover { background:rgba(212,168,67,.3); box-shadow:0 0 20px rgba(212,168,67,.5); transform:scale(1.1); }
+
+    /* tap-to-start overlay (shows when autoplay is blocked) */
+    #tapOverlay {
+      position:fixed; inset:0; z-index:99998;
+      display:flex; flex-direction:column; align-items:center; justify-content:center; gap:16px;
+      background:rgba(0,0,0,.65); backdrop-filter:blur(4px);
+      cursor:pointer; opacity:0; pointer-events:none;
+      transition:opacity .4s;
+    }
+    #tapOverlay.show { opacity:1; pointer-events:all; }
+    #tapOverlay .tap-icon  { font-size:3rem; animation:heartbeat 1.4s infinite; }
+    #tapOverlay .tap-label {
+      font-family:'Orbitron',monospace; font-size:.85rem; letter-spacing:.2em;
+      color:rgba(255,255,255,.8); text-transform:uppercase;
+    }
+    /* ── Enter Screen ── */
+    #enterScreen {
+      position:fixed; inset:0; z-index:100000;
+      background-image: url('loader-bg.png');
+      background-size:contain; background-position:center; background-repeat:no-repeat;
+      background-color:#000;
+      display:flex; align-items:center; justify-content:center;
+      transition:opacity .7s ease, visibility .7s ease;
+    }
+    #enterScreen::before {
+      content:''; position:absolute; inset:0;
+      background:linear-gradient(160deg,rgba(0,0,0,.75) 0%,rgba(10,2,30,.68) 40%,rgba(0,0,0,.8) 100%);
+    }
+    #enterScreen::after {
+      content:''; position:absolute; inset:0; pointer-events:none;
+      background:repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(255,255,255,.014) 2px,rgba(255,255,255,.014) 4px);
+    }
+    #enterScreen.hide { opacity:0; visibility:hidden; pointer-events:none; }
+
+    .enter-centre {
+      position:relative; z-index:2;
+      display:flex; flex-direction:column; align-items:center; gap:18px;
+      text-align:center; padding:20px;
+    }
+    .enter-crown {
+      font-size:4rem;
+      animation:crownGlow 2s ease-in-out infinite alternate;
+    }
+    .enter-title {
+      font-family:'Cinzel Decorative',serif; font-weight:900;
+      font-size:clamp(1.8rem,5vw,3.8rem);
+      background:linear-gradient(135deg,#f0d080,#d4a843,#c8860a,#f0d080);
+      -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text;
+      background-size:200% auto; animation:shimmer 3s linear infinite;
+      letter-spacing:.12em;
+    }
+    .enter-sub {
+      font-family:'Cormorant Garamond',serif; font-style:italic;
+      color:rgba(212,168,67,.7); font-size:1.1rem; letter-spacing:.12em;
+    }
+    #enterBtn {
+      display:flex; align-items:center; gap:12px;
+      padding:16px 42px; border-radius:60px; cursor:pointer;
+      background:linear-gradient(135deg,rgba(212,168,67,.18),rgba(139,0,50,.2));
+      border:1.5px solid rgba(212,168,67,.7);
+      backdrop-filter:blur(12px);
+      color:#f0d080; font-family:'Cinzel',serif;
+      font-size:1.1rem; letter-spacing:.15em;
+      transition:all .25s;
+      animation:enterPulse 1.8s ease-in-out infinite;
+      box-shadow:0 0 30px rgba(212,168,67,.2);
+    }
+    #enterBtn:hover {
+      background:linear-gradient(135deg,rgba(212,168,67,.35),rgba(139,0,50,.35));
+      box-shadow:0 0 50px rgba(212,168,67,.5);
+      transform:scale(1.05);
+      animation:none;
+    }
+    #enterBtn:active {
+      transform:scale(0.97);
+      background:linear-gradient(135deg,rgba(212,168,67,.45),rgba(139,0,50,.45));
+    }
+    @keyframes enterPulse {
+      0%,100%{ box-shadow:0 0 20px rgba(212,168,67,.2); transform:scale(1); }
+      50%    { box-shadow:0 0 50px rgba(212,168,67,.55); transform:scale(1.03); }
+    }
+    .enter-btn-icon { font-size:1rem; }
+    .enter-btn-text { text-transform:uppercase; }
+    .enter-hint {
+      font-family:'Orbitron',monospace; font-size:.6rem;
+      color:rgba(255,255,255,.3); letter-spacing:.2em; text-transform:uppercase;
+    }
+
+    /* ══ CARD FLIP ══ */
+    .card.flip-card { transform-style: preserve-3d; }
+
+    .flip-inner {
+      position: relative; width: 100%; height: 100%;
+      transform-style: preserve-3d;
+      transition: transform 0.75s cubic-bezier(0.23, 1, 0.32, 1);
+    }
+    .flip-inner.flipped { transform: rotateY(180deg); }
+
+    .flip-front, .flip-back {
+      position: absolute; inset: 0;
+      backface-visibility: hidden;
+      -webkit-backface-visibility: hidden;
+      border-radius: 24px;
+      overflow: hidden;
+    }
+
+    .flip-front {
+      background: radial-gradient(circle at center, #1b0928 0%, #08020e 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    /* BACK — shayari face */
+    .flip-back {
+      transform: rotateY(180deg);
+      background: linear-gradient(160deg, #0d0120 0%, #1e0535 35%, #3d0a20 70%, #1a0a2e 100%);
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      padding: 24px 20px; gap: 0;
+    }
+
+    /* rose petals decorative corners */
+    .flip-back::before {
+      content: '🌹';
+      position: absolute; top: 12px; right: 14px;
+      font-size: 1.6rem; opacity: .55;
+      filter: drop-shadow(0 0 6px rgba(139,0,50,.8));
+    }
+    .flip-back::after {
+      content: '🌸';
+      position: absolute; bottom: 12px; left: 14px;
+      font-size: 1.4rem; opacity: .45;
+    }
+
+    /* gold top bar */
+    .flip-back .back-topbar {
+      position: absolute; top: 0; left: 0; right: 0; height: 3px;
+      background: linear-gradient(90deg, #8b0032, #d4a843, #8b0032);
+    }
+
+    .shayari-divider {
+      display: flex; align-items: center; gap: 8px;
+      width: 100%; margin: 10px 0;
+    }
+    .shayari-divider span { flex:1; height:1px; background:linear-gradient(90deg,transparent,rgba(212,168,67,.5),transparent); }
+    .shayari-divider em { color: rgba(212,168,67,.7); font-size: .65rem; font-style:normal; }
+
+    .shayari-icon {
+      font-size: 1.5rem; margin-bottom: 4px;
+      animation: heartbeat 1.4s ease-in-out infinite;
+    }
+
+    .shayari-text {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(.88rem, 2.5vw, 1.05rem);
+      line-height: 1.85;
+      color: rgba(255,255,255,.9);
+      text-align: center;
+      font-style: italic;
+    }
+    .shayari-text .line { display: block; margin-bottom: 12px; }
+    .shayari-text .line:last-child { margin-bottom: 0; }
+    .shayari-text .gold { color: #f0d080; font-style: normal; font-weight: 600; }
+
+    .shayari-tap-hint {
+      position: absolute; bottom: 14px;
+      font-family: 'Orbitron', monospace; font-size: .52rem;
+      color: rgba(212,168,67,.35); letter-spacing: .15em;
+      text-transform: uppercase;
+    }
+
+    /* ══ LOGIN BUTTON (top-right) ══ */
+    #loginBtn {
+      position: fixed; top: 20px; right: 22px; z-index: 200;
+      display: flex; align-items: center; gap: 8px;
+      padding: 9px 20px; border-radius: 30px;
+      background: rgba(212,168,67,.12);
+      border: 1px solid rgba(212,168,67,.5);
+      color: #f0d080; font-family: 'Cinzel', serif;
+      font-size: .75rem; letter-spacing: .14em;
+      cursor: pointer; backdrop-filter: blur(12px);
+      transition: all .25s;
+      box-shadow: 0 0 14px rgba(212,168,67,.15);
+    }
+    #loginBtn:hover {
+      background: rgba(212,168,67,.28);
+      box-shadow: 0 0 28px rgba(212,168,67,.45);
+      transform: translateY(-1px);
+    }
+    #loginBtn span { font-size: .9rem; }
+
+    /* ══ FULL-SCREEN LOGIN PAGE ══ */
+    #loginModal {
+      position: fixed; inset: 0; z-index: 99990;
+      width: 100vw; height: 100vh;
+      display: flex; align-items: center; justify-content: center;
+      opacity: 0; visibility: hidden;
+      transition: opacity .45s ease, visibility .45s ease;
+      overflow-y: auto;
+      -webkit-overflow-scrolling: touch;
+      padding: max(20px, env(safe-area-inset-top)) 14px max(20px, env(safe-area-inset-bottom));
+    }
+    #loginModal.open { opacity: 1; visibility: visible; }
+
+    /* ═══ CINEMATIC FULL-SCREEN EYES — img element for maximum sharpness ═══ */
+    .login-fullscreen-bg {
+      position: absolute; inset: 0;
+      width: 100%; height: 100%;
+      z-index: 0;
+    }
+    .login-fullscreen-bg img {
+      width: 100%; height: 100%;
+      object-fit: cover;
+      object-position: center center;
+      display: block;
+      /* ZERO blur, ZERO filter — crisp cinema frame */
+    }
+
+    /* Thin edge-only vignette — keeps centre 100% sharp and bright */
+    .login-fullscreen-overlay {
+      position: absolute; inset: 0;
+      background: radial-gradient(
+        ellipse 80% 75% at 50% 50%,
+        transparent          0%,
+        transparent          55%,
+        rgba(4, 1, 10, 0.45) 80%,
+        rgba(4, 1, 10, 0.80) 100%
+      );
+      z-index: 1;
+      pointer-events: none;
+    }
+
+    /* Remove scanlines — keeping it pure cinematic */
+    #loginModal::after { display: none; }
+
+    @media(max-width: 650px) {
+      .login-fullscreen-bg {
+        background-position: center center;
+        background-size: cover;
+      }
+    }
+
+    /* Top back button */
+    .login-back-btn {
+      position: absolute; top: 22px; left: 24px; z-index: 10;
+      display: flex; align-items: center; gap: 8px;
+      padding: 9px 20px; border-radius: 30px;
+      background: rgba(0,0,0,.5);
+      border: 1px solid rgba(212,168,67,.65);
+      color: #f0d080; font-family: 'Cinzel', serif;
+      font-size: .78rem; letter-spacing: .12em;
+      cursor: pointer; backdrop-filter: blur(8px);
+      transition: all .25s; box-shadow: 0 0 16px rgba(0,0,0,.6);
+    }
+    .login-back-btn:hover {
+      background: rgba(212,168,67,.32);
+      box-shadow: 0 0 25px rgba(212,168,67,.4);
+      transform: translateX(-3px);
+    }
+
+    /* Close button top-right */
+    #loginClose {
+      position: absolute; top: 22px; right: 24px; z-index: 10;
+      width: 40px; height: 40px; border-radius: 50%;
+      background: rgba(0,0,0,.55); border: 1px solid rgba(212,168,67,.6);
+      color: rgba(212,168,67,.95); font-size: 1.15rem;
+      cursor: pointer; display: flex; align-items: center; justify-content: center;
+      transition: all .25s; backdrop-filter: blur(8px);
+    }
+    #loginClose:hover {
+      background: rgba(139,0,50,.7); color: #fff;
+      transform: scale(1.08); box-shadow: 0 0 20px rgba(139,0,50,.5);
+    }
+
+    /* Central transparent glassmorphism login card — sees through to the eyes! */
+    .login-box {
+      position: relative; z-index: 2;
+      width: min(460px, 90vw);
+      border-radius: 26px;
+      overflow: hidden;
+      border: 1.5px solid rgba(212,168,67,.65);
+      background: rgba(10, 2, 22, 0.22);
+      box-shadow: 0 30px 80px rgba(0,0,0,.7), 0 0 35px rgba(212,168,67,.22), inset 0 1px 0 rgba(255,255,255,.2);
+      animation: loginSlideIn .5s cubic-bezier(0.23,1,0.32,1) both;
+    }
+    @keyframes loginSlideIn {
+      from { transform: translate3d(0, 30px, 0) scale(.95); opacity: 0; }
+      to   { transform: translate3d(0, 0, 0)    scale(1);   opacity: 1; }
+    }
+
+    /* Gold top accent bar */
+    .login-topbar {
+      position: absolute; top: 0; left: 0; right: 0; height: 3px;
+      background: linear-gradient(90deg, #8b0032, #d4a843, #8b0032);
+    }
+
+    /* Form area — fully transparent, zero blur, eyes shine through completely */
+    .login-body {
+      background: transparent;
+      backdrop-filter: none;
+      -webkit-backdrop-filter: none;
+      padding: 34px 34px 30px;
+    }
+
+    .login-crown {
+      font-size: 2.4rem; margin-bottom: 4px; text-align: center;
+      filter: drop-shadow(0 2px 8px rgba(0,0,0,0.9));
+      animation: crownGlow 2s ease-in-out infinite alternate;
+    }
+
+    .login-header-row {
+      display: flex; align-items: center; justify-content: center;
+      position: relative; margin-bottom: 4px;
+    }
+
+    .login-title {
+      font-family: 'Cinzel Decorative', serif; font-weight: 900;
+      font-size: clamp(1.15rem, 3.2vw, 1.45rem);
+      background: linear-gradient(135deg, #f0d080, #d4a843, #f0d080);
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+      background-clip: text; background-size: 200% auto;
+      animation: shimmer 3s linear infinite;
+      text-align: center;
+      filter: drop-shadow(0 2px 10px rgba(0,0,0,0.95));
+    }
+
+    /* Hint button on card */
+    .hint-btn {
+      position: absolute; right: 0; top: 50%;
+      transform: translateY(-50%);
+      width: 30px; height: 30px; border-radius: 50%;
+      background: rgba(212,168,67,.22);
+      border: 1.2px solid rgba(212,168,67,.75);
+      color: #ffd875; font-size: .95rem; font-weight: bold;
+      cursor: pointer; display: flex; align-items: center; justify-content: center;
+      transition: all .25s; box-shadow: 0 0 12px rgba(212,168,67,.3);
+    }
+    .hint-btn:hover {
+      background: rgba(212,168,67,.45);
+      transform: translateY(-50%) scale(1.12);
+      box-shadow: 0 0 20px rgba(212,168,67,.6);
+    }
+
+    .login-sub {
+      font-family: 'Cormorant Garamond', serif; font-style: italic;
+      color: #f0d080; font-size: .95rem;
+      text-align: center; margin-bottom: 20px; letter-spacing: .08em;
+      text-shadow: 0 2px 10px rgba(0,0,0,0.95);
+    }
+
+    /* ══ HINT DROPDOWN BOX ══ */
+    .hint-box {
+      max-height: 0; opacity: 0; overflow: hidden;
+      transition: all .35s cubic-bezier(0.23,1,0.32,1);
+      margin-bottom: 0; border-radius: 16px;
+      background: rgba(15, 3, 30, 0.75);
+      border: 1px solid rgba(212,168,67, 0);
+      backdrop-filter: blur(14px);
+      text-align: center;
+    }
+    .hint-box.open {
+      max-height: 180px; opacity: 1;
+      margin-bottom: 18px; padding: 14px 16px;
+      border-color: rgba(212,168,67, 0.65);
+      box-shadow: 0 10px 30px rgba(0,0,0,0.7), 0 0 20px rgba(212,168,67,0.2);
+    }
+    .hint-title {
+      font-family: 'Cinzel', serif; font-size: .75rem;
+      color: #f0d080; letter-spacing: .12em; text-transform: uppercase;
+      margin-bottom: 6px;
+    }
+    .hint-desc {
+      font-family: 'Cormorant Garamond', serif; font-style: italic;
+      color: rgba(255,255,255,0.95); font-size: .95rem; line-height: 1.5;
+      margin-bottom: 10px;
+    }
+    .hint-desc strong {
+      color: #ffd875; font-style: normal; font-weight: 700;
+      background: rgba(212,168,67,0.25); padding: 1px 7px; border-radius: 6px;
+    }
+    .hint-autofill-btn {
+      background: linear-gradient(135deg, rgba(212,168,67,0.32), rgba(139,0,50,0.35));
+      border: 1.2px solid rgba(212,168,67,0.7);
+      border-radius: 20px; padding: 6px 18px;
+      color: #f0d080; font-family: 'Cinzel', serif; font-size: .7rem;
+      letter-spacing: .1em; cursor: pointer; transition: all .2s;
+    }
+    .hint-autofill-btn:hover {
+      background: linear-gradient(135deg, rgba(212,168,67,0.5), rgba(139,0,50,0.5));
+      transform: scale(1.04);
+      box-shadow: 0 0 16px rgba(212,168,67,0.45);
+    }
+
+    /* Input fields */
+    .login-field {
+      width: 100%; margin-bottom: 18px;
+    }
+    .login-field label {
+      display: block;
+      font-family: 'Cinzel', serif; font-size: .72rem;
+      color: #f0d080; letter-spacing: .15em;
+      text-transform: uppercase; margin-bottom: 8px;
+      text-align: left;
+      text-shadow: 0 2px 8px rgba(0,0,0,0.95);
+    }
+    .login-field input {
+      width: 100%; box-sizing: border-box;
+      padding: 13px 18px; border-radius: 14px;
+      background: rgba(0, 0, 0, 0.45);
+      border: 1.2px solid rgba(212,168,67,.6);
+      color: #fff; font-family: 'Cormorant Garamond', serif;
+      font-size: 1.05rem; outline: none;
+      transition: border-color .2s, box-shadow .2s, background .2s;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.5);
+    }
+    .login-field input::placeholder { color: rgba(240,208,128,.55); font-style: italic; }
+    .login-field input:focus {
+      border-color: rgba(212,168,67,1);
+      box-shadow: 0 0 24px rgba(212,168,67,.4);
+      background: rgba(0, 0, 0, 0.65);
+    }
+    .login-field input::placeholder { color: rgba(240,208,128,.55); font-style: italic; }
+    .login-field input:focus {
+      border-color: rgba(212,168,67,1);
+      box-shadow: 0 0 24px rgba(212,168,67,.4);
+      background: rgba(0, 0, 0, 0.65);
+    }
+
+    /* Submit button */
+    #loginSubmit {
+      width: 100%; padding: 14px;
+      border-radius: 14px; cursor: pointer;
+      background: linear-gradient(135deg, rgba(212,168,67,.25), rgba(139,0,50,.3));
+      border: 1.5px solid rgba(212,168,67,.7);
+      color: #f0d080; font-family: 'Cinzel', serif;
+      font-size: .88rem; letter-spacing: .16em;
+      text-transform: uppercase;
+      transition: all .25s;
+      margin-top: 10px;
+      box-shadow: 0 0 25px rgba(212,168,67,.15);
+    }
+    #loginSubmit:hover {
+      background: linear-gradient(135deg, rgba(212,168,67,.45), rgba(139,0,50,.45));
+      box-shadow: 0 0 35px rgba(212,168,67,.5);
+      transform: translateY(-2px);
+    }
+    #loginSubmit:active {
+      transform: scale(0.98);
+    }
+
+    /* Login response message */
+    #loginMsg {
+      text-align: center; margin-top: 14px;
+      font-family: 'Cormorant Garamond', serif; font-style: italic;
+      font-size: 1rem; min-height: 22px;
+      color: rgba(212,168,67,.9);
+    }
+
+    /* ══════════════════════════════════════════
+       ══ ROYAL LETTER PAGE (continuous pop-up) ══
+       ══════════════════════════════════════════ */
+    #letterPage {
+      position: fixed; inset: 0; z-index: 99995;
+      width: 100vw; height: 100vh;
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: flex-start;
+      background: radial-gradient(circle at center, #240538 0%, #0d0118 60%, #05000a 100%);
+      opacity: 0; visibility: hidden;
+      transition: opacity .6s cubic-bezier(0.23,1,0.32,1), visibility .6s;
+      overflow-y: auto;
+      -webkit-overflow-scrolling: touch;
+      padding: max(60px, calc(env(safe-area-inset-top) + 20px)) 16px max(30px, env(safe-area-inset-bottom));
+    }
+    #letterPage.open { opacity: 1; visibility: visible; }
+
+    /* Floating particles inside letter page */
+    .letter-page-stars {
+      position: absolute; inset: 0; pointer-events: none;
+      background: radial-gradient(1px 1px at 20% 30%, rgba(255,215,0,0.4), transparent),
+                  radial-gradient(1.5px 1.5px at 70% 40%, rgba(255,215,0,0.5), transparent),
+                  radial-gradient(1px 1px at 40% 80%, rgba(255,255,255,0.4), transparent);
+      background-size: 300px 300px;
+      animation: sparkleFloat 20s linear infinite;
+    }
+
+    .letter-back-btn {
+      position: absolute; top: 22px; left: 24px; z-index: 10;
+      display: flex; align-items: center; gap: 8px;
+      padding: 9px 20px; border-radius: 30px;
+      background: rgba(0,0,0,.55);
+      border: 1px solid rgba(212,168,67,.65);
+      color: #f0d080; font-family: 'Cinzel', serif;
+      font-size: .78rem; letter-spacing: .12em;
+      cursor: pointer; backdrop-filter: blur(10px);
+      transition: all .25s; box-shadow: 0 0 16px rgba(0,0,0,.6);
+    }
+    .letter-back-btn:hover {
+      background: rgba(212,168,67,.35);
+      box-shadow: 0 0 25px rgba(212,168,67,.5);
+      transform: translateX(-3px);
+    }
+
+    .letter-page-header {
+      text-align: center; margin-bottom: 20px; position: relative; z-index: 2;
+    }
+    .letter-crown {
+      font-size: 2.5rem; margin-bottom: 6px;
+      filter: drop-shadow(0 0 16px rgba(212,168,67,.8));
+      animation: crownGlow 2s ease-in-out infinite alternate;
+    }
+    .letter-page-title {
+      font-family: 'Cinzel Decorative', serif; font-weight: 900;
+      font-size: clamp(1.4rem, 4vw, 2.2rem);
+      background: linear-gradient(135deg, #fff3c4, #f0d080, #c8860a, #fff3c4);
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+      background-clip: text; background-size: 200% auto;
+      animation: shimmer 3s linear infinite;
+      letter-spacing: .12em;
+      filter: drop-shadow(0 2px 14px rgba(0,0,0,0.9));
+    }
+    .letter-page-sub {
+      font-family: 'Cormorant Garamond', serif; font-style: italic;
+      color: #f0d080; font-size: 1.05rem; letter-spacing: .08em;
+      margin-top: 6px; text-shadow: 0 2px 8px rgba(0,0,0,0.9);
+    }
+
+    /* ══ Continuous Pop-Up Floating Envelope ══ */
+    .envelope-pop-container {
+      position: relative; z-index: 2;
+      width: min(440px, 88vw);
+      margin: 10px auto 25px;
+      cursor: pointer;
+      border-radius: 20px;
+      will-change: transform;
+      filter: drop-shadow(0 20px 40px rgba(0,0,0,0.85)) drop-shadow(0 0 25px rgba(212,168,67,0.35));
+      animation: letterPopContinuous 3.4s ease-in-out infinite;
+      transition: transform .35s cubic-bezier(0.23,1,0.32,1);
+    }
+    .envelope-pop-container:hover {
+      animation-play-state: paused;
+      transform: translate3d(0, -22px, 0) scale(1.04);
+    }
+    @keyframes letterPopContinuous {
+      0%, 100% {
+        transform: translate3d(0, 0, 0) scale(1);
+      }
+      50% {
+        transform: translate3d(0, -18px, 0) scale(1.035);
+      }
+    }
+
+    .envelope-card-img {
+      width: 100%; height: auto;
+      display: block;
+      border-radius: 20px;
+      border: 1.5px solid rgba(212,168,67,0.6);
+      box-shadow: 0 0 25px rgba(212,168,67,0.25);
+    }
+
+    .envelope-glow-tap {
+      position: absolute; bottom: 18px; left: 50%;
+      transform: translateX(-50%);
+      background: rgba(14, 2, 28, 0.88);
+      border: 1.2px solid rgba(212,168,67,0.8);
+      color: #ffd875;
+      padding: 7px 22px;
+      border-radius: 25px;
+      font-family: 'Cinzel', serif;
+      font-size: .78rem;
+      letter-spacing: .14em;
+      pointer-events: none;
+      backdrop-filter: blur(10px);
+      box-shadow: 0 0 20px rgba(212,168,67,0.4);
+      white-space: nowrap;
+      animation: pulseTapGlow 2s infinite ease-in-out;
+    }
+    @keyframes pulseTapGlow {
+      0%, 100% { transform: translateX(-50%) scale(1); box-shadow: 0 0 15px rgba(212,168,67,0.3); }
+      50% { transform: translateX(-50%) scale(1.06); box-shadow: 0 0 30px rgba(212,168,67,0.8); }
+    }
+
+    /* Disclose Button */
+    .disclose-btn {
+      position: relative; z-index: 2;
+      display: inline-flex; align-items: center; gap: 12px;
+      padding: 15px 36px;
+      border-radius: 40px;
+      background: linear-gradient(135deg, rgba(212,168,67,0.35), rgba(139,0,50,0.55));
+      border: 1.5px solid rgba(212,168,67,0.85);
+      color: #fff2cc;
+      font-family: 'Cinzel', serif;
+      font-size: .92rem;
+      letter-spacing: .16em;
+      text-transform: uppercase;
+      cursor: pointer;
+      transition: all .3s cubic-bezier(0.23,1,0.32,1);
+      box-shadow: 0 10px 35px rgba(0,0,0,0.7), 0 0 30px rgba(212,168,67,0.35);
+    }
+    .disclose-btn:hover {
+      background: linear-gradient(135deg, rgba(212,168,67,0.55), rgba(139,0,50,0.75));
+      box-shadow: 0 15px 50px rgba(0,0,0,0.85), 0 0 50px rgba(212,168,67,0.75);
+      transform: translateY(-3px) scale(1.04);
+    }
+
+    /* ═════════════════════════════════════════════
+       ══ THE MAIN 1-PAGE LETTER MODAL (PARCHMENT) ══
+       ═════════════════════════════════════════════ */
+    #unfoldedLetterModal {
+      position: fixed; inset: 0; z-index: 99999;
+      display: flex; align-items: center; justify-content: center;
+      background: rgba(0,0,0,0.85);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      opacity: 0; visibility: hidden;
+      transition: opacity .45s ease, visibility .45s ease;
+      overflow-y: auto;
+      -webkit-overflow-scrolling: touch;
+      padding: max(20px, env(safe-area-inset-top)) 14px max(20px, env(safe-area-inset-bottom));
+    }
+    #unfoldedLetterModal.open { opacity: 1; visibility: visible; }
+
+    .parchment-sheet {
+      position: relative;
+      width: min(620px, 92vw);
+      max-height: 88vh;
+      max-height: 88dvh;
+      overflow-y: auto;
+      -webkit-overflow-scrolling: touch;
+      will-change: transform;
+      background: linear-gradient(155deg, #fdfaf1 0%, #f7ecd0 45%, #faedd3 100%);
+      border: 2px solid #b38827;
+      border-radius: 18px;
+      padding: 42px 36px 34px;
+      box-shadow: 0 30px 80px rgba(0,0,0,0.85), inset 0 0 50px rgba(180, 130, 40, 0.12);
+      animation: letterUnfoldIn .45s cubic-bezier(0.23,1,0.32,1) both;
+      color: #3b2016;
+    }
+    @keyframes letterUnfoldIn {
+      from { transform: translate3d(0, 40px, 0) scale(.92); opacity: 0; }
+      to   { transform: translate3d(0, 0, 0)    scale(1);   opacity: 1; }
+    }
+
+    /* Parchment inner decorative gold frame */
+    .parchment-inner-border {
+      position: absolute; inset: 12px;
+      border: 1px solid rgba(179, 136, 39, 0.45);
+      border-radius: 12px;
+      pointer-events: none;
+    }
+
+    /* Wax seal stamp at the top of parchment */
+    .parchment-seal {
+      width: 58px; height: 58px;
+      margin: 0 auto 16px;
+      border-radius: 50%;
+      background: radial-gradient(circle at 35% 35%, #9b111e, #680009);
+      border: 2px solid #d4a843;
+      box-shadow: 0 8px 25px rgba(0,0,0,0.4), inset 0 2px 4px rgba(255,255,255,0.4);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.8rem;
+    }
+
+    .parchment-title {
+      font-family: 'Cinzel Decorative', serif; font-weight: 900;
+      font-size: clamp(1.2rem, 3.2vw, 1.6rem);
+      color: #7a0016; text-align: center;
+      letter-spacing: .1em; margin-bottom: 4px;
+    }
+    .parchment-subtitle {
+      font-family: 'Cormorant Garamond', serif; font-style: italic;
+      color: #8c5d23; font-size: 1rem; text-align: center;
+      margin-bottom: 24px;
+    }
+
+    .letter-divider {
+      display: flex; align-items: center; justify-content: center;
+      gap: 12px; margin: 16px 0 24px; color: #b38827;
+    }
+    .letter-divider::before, .letter-divider::after {
+      content: ''; width: 60px; height: 1px; background: #b38827;
+    }
+
+    .letter-salutation {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.35rem; font-weight: 700;
+      color: #7a0016; margin-bottom: 14px;
+    }
+    .letter-body-content {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.15rem; line-height: 1.85;
+      color: #2b170c;
+    }
+    .letter-paragraph {
+      margin-bottom: 16px;
+    }
+    .letter-dropcap {
+      float: left; font-family: 'Cinzel Decorative', serif;
+      font-size: 3.2rem; line-height: .8;
+      padding-top: 4px; padding-right: 8px;
+      color: #8b0020; font-weight: 900;
+    }
+    .letter-placeholder-note {
+      background: rgba(122, 0, 22, 0.06);
+      border-left: 3px solid #8b0020;
+      padding: 14px 18px;
+      margin: 20px 0;
+      border-radius: 0 10px 10px 0;
+      font-style: italic; color: #7a1525;
+      font-size: 1.05rem;
+    }
+    .letter-closing {
+      margin-top: 28px; text-align: right;
+      font-family: 'Cormorant Garamond', serif; font-style: italic;
+      font-size: 1.25rem; color: #7a0016;
+    }
+    .letter-closing strong {
+      font-family: 'Cinzel', serif; font-style: normal;
+      font-size: 1.1rem; display: block; margin-top: 6px;
+    }
+
+    .parchment-close-btn {
+      display: block; margin: 30px auto 0;
+      padding: 10px 28px; border-radius: 25px;
+      background: #7a0016; border: 1.5px solid #b38827;
+      color: #f7ecd0; font-family: 'Cinzel', serif;
+      font-size: .8rem; letter-spacing: .12em;
+      cursor: pointer; transition: all .25s;
+      box-shadow: 0 6px 20px rgba(0,0,0,0.3);
+    }
+    .parchment-close-btn:hover {
+      background: #9b111e;
+      box-shadow: 0 8px 25px rgba(122,0,22,0.5);
+      transform: translateY(-2px);
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ══════ BACKGROUND AUDIO ══════ -->
+  <audio id="bgAudio" loop preload="auto">
+    <source src="audio.mp3" type="audio/mpeg"/>
+  </audio>
+
+  <!-- ══════ TAP TO ENTER SCREEN (shown first) ══════ -->
+  <div id="enterScreen">
+    <!-- corner HUDs -->
+    <div class="hud-corner hud-tl">[ FILE_08 ]</div>
+    <div class="hud-corner hud-tr">DEVI&nbsp;JI&nbsp;2025</div>
+    <span class="hud-cross left">+</span>
+    <span class="hud-cross right">+</span>
+
+    <!-- centre tap button -->
+    <div class="enter-centre">
+      <div class="enter-crown">👑</div>
+      <div class="enter-title">Your Highness</div>
+      <div class="enter-sub">🌸 A Royal Message Awaits 🌸</div>
+      <button id="enterBtn">
+        <span class="enter-btn-icon">▶</span>
+        <span class="enter-btn-text">Click to Enter</span>
+      </button>
+      <div class="enter-hint">🎵 Music &amp; Experience will begin</div>
+    </div>
+  </div>
+
+  <!-- ══════ LOADING SCREEN (behind enter screen) ══════ -->
+  <div id="loader">
+    <div class="hud-corner hud-tl">[ FILE_08 ]</div>
+    <div class="hud-corner hud-tr">DEVI&nbsp;JI&nbsp;2025</div>
+    <div class="hud-corner hud-bl">PLEASE WAIT 🌸🌺</div>
+    <div class="hud-corner hud-br">
+      <span class="loader-pct" id="loaderPct">0%</span>
+      <div class="loader-bar-wrap"><div class="loader-bar-fill" id="loaderBar"></div></div>
+    </div>
+    <span class="hud-cross left">+</span>
+    <span class="hud-cross right">+</span>
+    <div id="loadPetals" style="position:absolute;inset:0;pointer-events:none;overflow:hidden;z-index:2;"></div>
+    <div class="loader-centre">
+      <div class="glitch-wrap">
+        <span class="glitch-main">Welcome Your Highness</span>
+        <span class="glitch-slice s0">Welcome Your Highness</span>
+        <span class="glitch-slice s1">Welcome Your Highness</span>
+        <span class="glitch-slice s2">Welcome Your Highness</span>
+        <span class="glitch-slice s3">Welcome Your Highness</span>
+        <span class="glitch-slice s4">Welcome Your Highness</span>
+        <span class="glitch-slice s5">Welcome Your Highness</span>
+        <span class="glitch-slice s6">Welcome Your Highness</span>
+        <span class="glitch-slice s7">Welcome Your Highness</span>
+      </div>
+      <div class="flower-row">🌸 🌺 🌹 💐 🌸 🌺 🌹</div>
+      <div class="loader-please">preparing your royal apology …</div>
+    </div>
+  </div><!-- /loader -->
+
+  <!-- Mute / Unmute button -->
+  <button id="muteBtn" title="Mute / Unmute">🔊</button>
+
+  <!-- ══════ MAIN PAGE ══════ -->
+  <div class="stars"></div>
+  <div class="orb orb1"></div>
+  <div class="orb orb2"></div>
+  <div class="orb orb3"></div>
+  <div id="petals"></div>
+
+  <div class="side-bar">
+    <div class="side-icon">📎</div>
+    <div class="side-icon">♡</div>
+    <div class="side-icon">👑</div>
+  </div>
+
+  <header class="crown-header fade-up">
+    <span class="crown-icon">👑</span>
+    <h1 class="site-title">I am sorry Devi Ji 😢❤️</h1>
+    <div class="divider">
+      <span class="divider-line"></span>
+      <span class="divider-gem">❖</span>
+      <span class="divider-line"></span>
+    </div>
+    <p class="header-sub">
+      I am sorry Devi Ji 😢 &nbsp;✦&nbsp; I am sorry Devi Ji ❤️ &nbsp;✦&nbsp; I am sorry Devi Ji 😢
+    </p>
+  </header>
+
+  <div class="carousel-outer">
+    <div class="card-stage" id="cardStage">
+
+      <!-- Card 0 — Flip card: FRONT = photo, BACK = shayari -->
+      <div class="card flip-card" data-index="0" data-state="active">
+        <div class="card-badge">1 / 5</div>
+        <div class="flip-inner" id="card0Inner">
+
+          <!-- FRONT — her photo -->
+          <div class="flip-front">
+            <img class="card-img" src="friend.jpg" alt="I am sorry Devi Ji"/>
+          </div>
+
+          <!-- BACK — shayari -->
+          <div class="flip-back">
+            <div class="back-topbar"></div>
+
+            <div class="shayari-icon">❤️</div>
+
+            <div class="shayari-divider">
+              <span></span><em>❖</em><span></span>
+            </div>
+
+            <p class="shayari-text">
+              <span class="line">
+                Bahane bahane se hum teri<br/>
+                <span class="gold">baat krte hain,</span>
+              </span>
+              <span class="line">
+                Har pal khayalon mai hum apse<br/>
+                <span class="gold">mulaqaat krte hain,</span>
+              </span>
+              <span class="line">
+                Itni dafa to aap saans bhi nhi lete<br/>
+                <span class="gold">jitni baar hum apko yaad krte hain...</span>
+              </span>
+            </p>
+
+            <div class="shayari-divider">
+              <span></span><em>🌹</em><span></span>
+            </div>
+
+            <div class="shayari-tap-hint">tap to go back</div>
+          </div>
+
+        </div><!-- /flip-inner -->
+      </div>
+
+      <!-- Card 1 — Flip card -->
+      <div class="card flip-card" data-index="1" data-state="next">
+        <div class="card-badge">2 / 5</div>
+        <div class="flip-inner" id="card1Inner">
+
+          <div class="flip-front">
+            <img class="card-img" src="photo2.jpg" alt="I am sorry Devi Ji"/>
+          </div>
+
+          <div class="flip-back">
+            <div class="back-topbar"></div>
+            <div class="shayari-icon">🌹</div>
+            <div class="shayari-divider"><span></span><em>❖</em><span></span></div>
+            <p class="shayari-text">
+              <span class="line">
+                Jo chahiye tha wo mujhe mila nhi,<br/>
+                <span class="gold">Shayad woh ful khila nhi,</span>
+              </span>
+              <span class="line">
+                Na jane kitne baag dekhe hain maine,<br/>
+                <span class="gold">Tujh jaisa gulab mujhe milaa nhi...</span>
+              </span>
+            </p>
+            <div class="shayari-divider"><span></span><em>🌸</em><span></span></div>
+            <div class="shayari-tap-hint">tap to go back</div>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- Card 2 — Flip card -->
+      <div class="card flip-card" data-index="2" data-state="next2">
+        <div class="card-badge">3 / 5</div>
+        <div class="flip-inner" id="card2Inner">
+
+          <div class="flip-front">
+            <img class="card-img" src="photo3.jpg" alt="I am sorry Devi Ji"/>
+          </div>
+
+          <div class="flip-back">
+            <div class="back-topbar"></div>
+            <div class="shayari-icon">🌺</div>
+            <div class="shayari-divider"><span></span><em>❖</em><span></span></div>
+            <p class="shayari-text">
+              <span class="line">
+                Tumhari aankhon mein<br/>
+                <span class="gold">dekha maine,</span>
+              </span>
+              <span class="line">
+                <span class="gold">Sacchi lagti ho,</span>
+              </span>
+              <span class="line">
+                Apni zulfein khol kar<br/>
+                <span class="gold">rakha karo,</span>
+              </span>
+              <span class="line">
+                <span class="gold">Achhi lagti ho.. 🌺</span>
+              </span>
+            </p>
+            <div class="shayari-divider"><span></span><em>💐</em><span></span></div>
+            <div class="shayari-tap-hint">tap to go back</div>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- Card 3 (Fourth Card) — Flip card -->
+      <div class="card flip-card" data-index="3" data-state="prev2">
+        <div class="card-badge">4 / 5</div>
+        <div class="flip-inner" id="card3Inner">
+
+          <div class="flip-front">
+            <img class="card-img" src="photo4.png" alt="I am sorry Devi Ji"/>
+          </div>
+
+          <div class="flip-back">
+            <div class="back-topbar"></div>
+            <div class="shayari-icon">✨</div>
+            <div class="shayari-divider"><span></span><em>❖</em><span></span></div>
+            <p class="shayari-text">
+              <span class="line">
+                Jante huye bi anjan banti ho,<br/>
+                <span class="gold">is tarh muje paresan karti ho,</span>
+              </span>
+              <span class="line">
+                Puchti ho ki muje kya pasand he,<br/>
+                <span class="gold">javab khud hi fir bi saval karti ho... ✨</span>
+              </span>
+            </p>
+            <div class="shayari-divider"><span></span><em>🌸</em><span></span></div>
+            <div class="shayari-tap-hint">tap to go back</div>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- Card 4 (Fifth Card) — Flip card -->
+      <div class="card flip-card" data-index="4" data-state="prev">
+        <div class="card-badge">5 / 5</div>
+        <div class="flip-inner" id="card4Inner">
+
+          <div class="flip-front">
+            <img class="card-img" src="photo5.png" alt="I am sorry Devi Ji"/>
+          </div>
+
+          <div class="flip-back">
+            <div class="back-topbar"></div>
+            <div class="shayari-icon">🌙</div>
+            <div class="shayari-divider"><span></span><em>❖</em><span></span></div>
+            <p class="shayari-text" style="font-size: clamp(.8rem, 2.2vw, .95rem); line-height: 1.65;">
+              <span class="line">
+                Ki kaise dekhu kisi or ko..<br/>
+                <span class="gold">Ki meri aankhon Mein sirf tum ho..</span>
+              </span>
+              <span class="line">
+                Nazare lakh haseen hi sahi magar..<br/>
+                <span class="gold">Mere liye peyari Sirf tum ho....</span>
+              </span>
+              <span class="line">
+                Chand, tare, phool, khusbu, sayari...<br/>
+                Ye sab bhi accha hai..<br/>
+                Magar main kya karun in sab ka..<br/>
+                <span class="gold">Mere liye peyari Sirf tum ho.... 💖</span>
+              </span>
+            </p>
+            <div class="shayari-divider"><span></span><em>✨</em><span></span></div>
+            <div class="shayari-tap-hint">tap to go back</div>
+          </div>
+
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <div class="controls-wrap fade-up">
+    <div class="nav-bar">
+      <button class="nav-btn" id="prevBtn">&#8249;</button>
+      <div class="nav-thumb"><img src="friend.jpg" alt="Devi Ji"/></div>
+      <div class="nav-info">
+        <div class="nav-info-title">I am sorry Devi Ji</div>
+        <div class="nav-info-sub">😢 Please forgive me ❤️</div>
+      </div>
+      <button class="nav-btn heart-btn">❤️</button>
+      <button class="nav-btn" id="nextBtn">&#8250;</button>
+    </div>
+    <div class="dots" id="dots">
+      <div class="dot active" data-index="0"></div>
+      <div class="dot" data-index="1"></div>
+      <div class="dot" data-index="2"></div>
+      <div class="dot" data-index="3"></div>
+      <div class="dot" data-index="4"></div>
+    </div>
+  </div>
+
+  <p class="footer-tagline">
+    ✦ I am sorry Devi Ji 😢 &nbsp;·&nbsp; I am sorry Devi Ji ❤️ &nbsp;·&nbsp; I am sorry Devi Ji 😢 ✦
+  </p>
+
+  <script>
+    /* ══════ ENTER BUTTON & SMOOTH AUDIO ══════ */
+    var audio       = document.getElementById('bgAudio');
+    var muteBtn     = document.getElementById('muteBtn');
+    var enterScreen = document.getElementById('enterScreen');
+    var loader      = document.getElementById('loader');
+    var loaderBar   = document.getElementById('loaderBar');
+    var loaderPct   = document.getElementById('loaderPct');
+    var LOAD_MS     = 4200;
+    var barTick     = null;
+
+    /* Pre-silence audio immediately on page load so zero pops can ever occur */
+    if (audio) {
+      audio.volume = 0;
+    }
+
+    /* Ultra-smooth volume swell using requestAnimationFrame with quadratic ease */
+    var fadeAnimId = null;
+    function smoothFadeInAudio(targetVol, durationMs) {
+      targetVol = targetVol || 0.85;
+      durationMs = durationMs || 3500;
+      audio.volume = 0;
+      if (fadeAnimId) cancelAnimationFrame(fadeAnimId);
+
+      var start = null;
+      function step(now) {
+        if (!start) start = now;
+        var elapsed = now - start;
+        var progress = Math.min(1, elapsed / durationMs);
+        // Cinematic ease-in curve for gentle and natural sound blossoming
+        var easeVol = targetVol * Math.pow(progress, 1.8);
+        try {
+          audio.volume = Math.min(targetVol, Math.max(0, easeVol));
+        } catch(e) {}
+
+        if (progress < 1) {
+          fadeAnimId = requestAnimationFrame(step);
+        } else {
+          try { audio.volume = targetVol; } catch(e) {}
+        }
+      }
+      fadeAnimId = requestAnimationFrame(step);
+    }
+
+    /* Spawn petals inside loader - mobile responsive */
+    function spawnPetals() {
+      var lpc  = document.getElementById('loadPetals');
+      if (!lpc) return;
+      var PLST = ['🌸','🌺','🌹','💐','✿','🌼'];
+      lpc.innerHTML = '';
+      var count = window.innerWidth < 768 ? 8 : 18;
+      for (var i = 0; i < count; i++) {
+        var p = document.createElement('span');
+        p.className = 'load-petal';
+        p.textContent = PLST[Math.floor(Math.random() * PLST.length)];
+        p.style.left              = (3 + Math.random() * 94) + 'vw';
+        p.style.fontSize          = (0.85 + Math.random() * 1.1) + 'rem';
+        p.style.animationDuration = (3 + Math.random() * 4) + 's';
+        p.style.animationDelay    = (Math.random() * 2) + 's';
+        lpc.appendChild(p);
+      }
+    }
+
+    /* Progress bar — runs for LOAD_MS then hides loader */
+    function startBar() {
+      var pct = 0;
+      loaderBar.style.width = '0%';
+      loaderPct.textContent = '0%';
+      barTick = setInterval(function() {
+        pct += (100 - pct) * 0.03 + 0.4;
+        if (pct >= 99) pct = 99;
+        loaderBar.style.width = pct + '%';
+        loaderPct.textContent = Math.floor(pct) + '%';
+      }, LOAD_MS / 120);
+
+      setTimeout(function() {
+        clearInterval(barTick);
+        loaderBar.style.width = '100%';
+        loaderPct.textContent = '100%';
+        setTimeout(function() { loader.classList.add('hide'); }, 400);
+      }, LOAD_MS);
+    }
+
+    /* CLICK → everything fires in clean, smooth sequence */
+    document.getElementById('enterBtn').addEventListener('click', function() {
+      /* 1. Ensure audio is 0 before play */
+      audio.volume = 0;
+
+      /* 2. Play audio and ramp volume with buttery smooth ease-in */
+      var playPromise = audio.play();
+      if (playPromise !== undefined) {
+        playPromise.then(function() {
+          smoothFadeInAudio(0.85, 3600);
+        }).catch(function(e) {
+          console.warn('Audio play error:', e);
+        });
+      }
+
+      /* 3. Spawn petals & start progress bar */
+      spawnPetals();
+      startBar();
+
+      /* 4. Fade out enter screen smoothly to reveal loader */
+      enterScreen.classList.add('hide');
+    });
+
+    /* Mute / Unmute */
+    muteBtn.addEventListener('click', function() {
+      if (audio.muted || audio.volume < 0.05) {
+        audio.muted  = false;
+        audio.volume = 0.8;
+        muteBtn.textContent = '🔊';
+      } else {
+        audio.muted = true;
+        muteBtn.textContent = '🔇';
+      }
+    });
+
+
+    /* ─── CAROUSEL ─── */
+    const TOTAL=5; let current=0;
+    const cards=document.querySelectorAll('.card');
+    const dots =document.querySelectorAll('.dot');
+
+    function stateFor(i,a){
+      const d=((i-a)%TOTAL+TOTAL)%TOTAL;
+      if(d===0)       return'active';
+      if(d===1)       return'next';
+      if(d===2)       return'next2';
+      if(d===TOTAL-1) return'prev';
+      if(d===TOTAL-2) return'prev2';
+      return'hidden';
+    }
+    function update(){
+      cards.forEach((c,i)=>c.dataset.state=stateFor(i,current));
+      dots.forEach((d,i)=>d.classList.toggle('active',i===current));
+      document.querySelectorAll('.flip-inner').forEach(el => el.classList.remove('flipped'));
+    }
+
+    document.getElementById('nextBtn').onclick=()=>{current=(current+1)%TOTAL;update();};
+    document.getElementById('prevBtn').onclick=()=>{current=(current-1+TOTAL)%TOTAL;update();};
+    dots.forEach(d=>d.addEventListener('click',()=>{current=+d.dataset.index;update();}));
+
+    cards.forEach(c => c.addEventListener('click', () => {
+      const s = c.dataset.state;
+
+      if (s === 'active') {
+        /* Toggle shayari flip on active card */
+        const inner = c.querySelector('.flip-inner');
+        if (inner) inner.classList.toggle('flipped');
+        return; /* don't navigate when tapping active card */
+      }
+      /* Side cards → navigate */
+      if (s === 'next' || s === 'next2') {
+        current = (current + 1) % TOTAL;
+        update();
+      }
+      if (s === 'prev' || s === 'prev2') {
+        current = (current - 1 + TOTAL) % TOTAL;
+        update();
+      }
+    }));
+
+    let touchStartX = 0, touchStartY = 0;
+    const stage = document.getElementById('cardStage');
+    if (stage) {
+      stage.addEventListener('touchstart', function(e) {
+        if (e.touches && e.touches.length > 0) {
+          touchStartX = e.touches[0].clientX;
+          touchStartY = e.touches[0].clientY;
+        }
+      }, { passive: true });
+
+      stage.addEventListener('touchend', function(e) {
+        if (e.changedTouches && e.changedTouches.length > 0) {
+          const dx = touchStartX - e.changedTouches[0].clientX;
+          const dy = touchStartY - e.changedTouches[0].clientY;
+          // Disambiguate intentional horizontal swipe from vertical page scroll
+          if (Math.abs(dx) > Math.abs(dy) * 1.2 && Math.abs(dx) > 35) {
+            current = dx > 0 ? (current + 1) % TOTAL : (current - 1 + TOTAL) % TOTAL;
+            update();
+          }
+        }
+      }, { passive: true });
+    }
+
+    document.addEventListener('keydown', function(e) {
+      if (e.key === 'ArrowRight') { current = (current + 1) % TOTAL; update(); }
+      if (e.key === 'ArrowLeft')  { current = (current - 1 + TOTAL) % TOTAL; update(); }
+    });
+
+    /* main floating petals - mobile performance optimized count */
+    const pc = document.getElementById('petals');
+    if (pc) {
+      const MP = ['🌸','🌺','💮','🌹','💐','✿','❀'];
+      const pCount = window.innerWidth < 768 ? 7 : 16;
+      for (let i = 0; i < pCount; i++) {
+        const p = document.createElement('span');
+        p.className = 'petal';
+        p.textContent = MP[Math.floor(Math.random() * MP.length)];
+        p.style.left = (Math.random() * 100) + 'vw';
+        p.style.fontSize = (0.65 + Math.random() * 0.85) + 'rem';
+        p.style.animationDuration = (9 + Math.random() * 12) + 's';
+        p.style.animationDelay = (Math.random() * 18) + 's';
+        pc.appendChild(p);
+      }
+    }
+  </script>
+
+  <!-- ══ LOGIN BUTTON ══ -->
+  <button id="loginBtn" onclick="document.getElementById('loginModal').classList.add('open')">
+    <span>👤</span> Login
+  </button>
+
+  <!-- ══ FULL-SCREEN LOGIN PAGE ══ -->
+  <div id="loginModal">
+    <!-- Fullscreen cinematic eye photo — fills 100% of screen -->
+    <div class="login-fullscreen-bg">
+      <img src="login-bg.png" alt="" draggable="false"/>
+    </div>
+    <div class="login-fullscreen-overlay"></div>
+
+    <!-- HUD elements -->
+    <div class="hud-corner hud-tl" style="z-index: 10;">[ ROYAL_CHAMBER ]</div>
+    <div class="hud-corner hud-tr" style="z-index: 10; right: 80px;">DEVI&nbsp;JI&nbsp;2025</div>
+
+    <!-- Top back navigation -->
+    <button class="login-back-btn" id="loginBackBtn">
+      <span>←</span> Back to Palace 🌸
+    </button>
+    <button id="loginClose">✕</button>
+
+    <!-- Center royal login panel -->
+    <div class="login-box">
+      <div class="login-topbar"></div>
+
+      <div class="login-body">
+        <div class="login-crown">👑</div>
+        <div class="login-header-row">
+          <div class="login-title">Devi Ji's Chamber</div>
+          <button type="button" class="hint-btn" id="hintBtn" title="Click for Hint">ℹ️</button>
+        </div>
+        <p class="login-sub">Only you may enter here, Your Highness ❤️</p>
+
+        <!-- Collapsible Royal Hint Box -->
+        <div class="hint-box" id="hintBox">
+          <div class="hint-title">✨ Royal Credentials Hint ✨</div>
+          <div class="hint-desc">
+            Cutie's Name: <strong>Mistu</strong> &nbsp;·&nbsp; Password: <strong>Rosogolla</strong> 🍯
+          </div>
+          <button type="button" class="hint-autofill-btn" id="hintAutofillBtn">✨ Click to Auto-Fill Credentials</button>
+        </div>
+
+        <div class="login-field">
+          <label>Cutie's Name</label>
+          <input type="text" id="loginName" placeholder="Enter 'Mistu'..." autocomplete="off"/>
+        </div>
+
+        <div class="login-field">
+          <label>Secret Password</label>
+          <input type="password" id="loginPass" placeholder="Enter 'Rosogolla' 🌹..."/>
+        </div>
+
+        <button id="loginSubmit">✨ Enter the Royal Chamber ✨</button>
+        <div id="loginMsg"></div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    /* ── FULL-SCREEN LOGIN LOGIC ── */
+    function closeLoginScreen() {
+      document.getElementById('loginModal').classList.remove('open');
+      document.getElementById('loginMsg').textContent = '';
+      document.getElementById('hintBox').classList.remove('open');
+    }
+
+    document.getElementById('loginClose').addEventListener('click', closeLoginScreen);
+    document.getElementById('loginBackBtn').addEventListener('click', closeLoginScreen);
+
+    /* Close on ESC key */
+    document.addEventListener('keydown', function(e) {
+      if (e.key === 'Escape') closeLoginScreen();
+    });
+
+    /* Hint (i) button toggle */
+    var hintBtn = document.getElementById('hintBtn');
+    var hintBox = document.getElementById('hintBox');
+    if (hintBtn && hintBox) {
+      hintBtn.addEventListener('click', function(e) {
+        e.stopPropagation();
+        hintBox.classList.toggle('open');
+      });
+    }
+
+    /* Auto-fill credentials button */
+    var autofillBtn = document.getElementById('hintAutofillBtn');
+    if (autofillBtn) {
+      autofillBtn.addEventListener('click', function() {
+        document.getElementById('loginName').value = 'Mistu';
+        document.getElementById('loginPass').value = 'Rosogolla';
+        hintBox.classList.remove('open');
+        var msg = document.getElementById('loginMsg');
+        msg.style.color = '#f0d080';
+        msg.textContent = '✨ Credentials loaded! Click Enter below ❤️';
+      });
+    }
+
+    /* Submit form & credentials check: Mistu + Rosogolla */
+    document.getElementById('loginSubmit').addEventListener('click', function() {
+      var nameInput = document.getElementById('loginName');
+      var passInput = document.getElementById('loginPass');
+      var name = nameInput.value.trim();
+      var pass = passInput.value.trim();
+      var msg  = document.getElementById('loginMsg');
+
+      if (!name || !pass) {
+        msg.style.color = 'rgba(255,130,130,.95)';
+        msg.textContent = '🌹 Please enter both Cutie\'s Name & Password! Click ℹ️ for hint.';
+        return;
+      }
+
+      var isNameValid = name.toLowerCase() === 'mistu';
+      var isPassValid = pass.toLowerCase() === 'rosogolla';
+
+      if (isNameValid && isPassValid) {
+        /* CORRECT CREDENTIALS! */
+        msg.style.color = '#f0d080';
+        msg.innerHTML = '💖 Welcome home, <strong>Mistu</strong>! The throne is forever yours, my sweet <strong>Rosogolla</strong> ❤️✨';
+        nameInput.style.borderColor = '#f0d080';
+        passInput.style.borderColor = '#f0d080';
+        nameInput.style.boxShadow = '0 0 20px rgba(212,168,67,0.7)';
+        passInput.style.boxShadow = '0 0 20px rgba(212,168,67,0.7)';
+
+        setTimeout(function() {
+          closeLoginScreen();
+          openLetterPage();
+          nameInput.value = '';
+          passInput.value = '';
+          nameInput.style.borderColor = '';
+          passInput.style.borderColor = '';
+          nameInput.style.boxShadow = '';
+          passInput.style.boxShadow = '';
+        }, 2000);
+      } else {
+        /* INCORRECT CREDENTIALS */
+        msg.style.color = 'rgba(255,120,120,0.95)';
+        if (!isNameValid && !isPassValid) {
+          msg.textContent = '❌ That name & password don\'t match! Click the ℹ️ button for the hint 🌸';
+        } else if (!isNameValid) {
+          msg.textContent = '❌ Cutie\'s Name is incorrect! Click ℹ️ for the hint, Mistu ❤️';
+        } else {
+          msg.textContent = '❌ Password is incorrect! Click ℹ️ for the hint, my sweet Rosogolla 🌹';
+        }
+        /* Open hint automatically so she is never stuck */
+        if (hintBox) hintBox.classList.add('open');
+      }
+    });
+
+    /* Enter key submits */
+    ['loginName','loginPass'].forEach(function(id) {
+      document.getElementById(id).addEventListener('keydown', function(e) {
+        if (e.key === 'Enter') document.getElementById('loginSubmit').click();
+      });
+    });
+
+    /* ══════════════════════════════════════════════════
+       ══ ROYAL LETTER PAGE & UNSEALING LETTER LOGIC ══
+       ══════════════════════════════════════════════════ */
+    function openLetterPage() {
+      var lp = document.getElementById('letterPage');
+      if (lp) lp.classList.add('open');
+    }
+
+    function closeLetterPage() {
+      var lp = document.getElementById('letterPage');
+      if (lp) lp.classList.remove('open');
+    }
+
+    function discloseLetter() {
+      var ul = document.getElementById('unfoldedLetterModal');
+      if (ul) ul.classList.add('open');
+    }
+
+    function closeUnfoldedLetter() {
+      var ul = document.getElementById('unfoldedLetterModal');
+      if (ul) ul.classList.remove('open');
+    }
+  </script>
+
+  <!-- ══════════════════════════════════════════════
+       ══ ROYAL LETTER PAGE (continuous pop-up) ══
+       ══════════════════════════════════════════════ -->
+  <div id="letterPage">
+    <div class="letter-page-stars"></div>
+
+    <!-- Back to Palace Button -->
+    <button class="letter-back-btn" onclick="closeLetterPage()">
+      <span>←</span> Back to Palace 👑
+    </button>
+
+    <!-- Header -->
+    <div class="letter-page-header">
+      <div class="letter-crown">👑</div>
+      <div class="letter-page-title">It's All Yours, Your Highness</div>
+      <p class="letter-page-sub">A royal love letter has arrived exclusively for Devi Ji ❤️</p>
+    </div>
+
+    <!-- Continuous Pop-Up Floating Envelope -->
+    <div class="envelope-pop-container" onclick="discloseLetter()" title="Click to Disclose Letter 💌">
+      <img class="envelope-card-img" src="letter-clean.png" alt="Royal Letter Envelope"/>
+      <div class="envelope-glow-tap">💌 Tap to Disclose Letter ✨</div>
+    </div>
+
+    <!-- Disclose Option Button -->
+    <button class="disclose-btn" onclick="discloseLetter()">
+      <span>📜</span> Disclose Royal Letter ✨
+    </button>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════════
+       ══ THE MAIN 1-PAGE ROYAL LETTER MODAL (PARCHMENT) ══
+       ═══════════════════════════════════════════════════ -->
+  <div id="unfoldedLetterModal">
+    <div class="parchment-sheet">
+      <div class="parchment-inner-border"></div>
+
+      <!-- Wax Seal Stamp -->
+      <div class="parchment-seal">👑</div>
+
+      <div class="parchment-title">A Sacred Royal Letter</div>
+      <div class="parchment-subtitle">Inscribed with all my heart for Devi Ji (Mistu) ❤️</div>
+
+      <div class="letter-divider">❖ &nbsp; ✦ &nbsp; ❖</div>
+
+      <!-- Salutation -->
+      <div class="letter-salutation">My Dearest Shubhangi,</div>
+
+      <!-- Letter Body -->
+      <div class="letter-body-content">
+        <div class="letter-paragraph">
+          <span class="letter-dropcap">I</span> know things are complicated between us right now, and mistakes on both sides have created a distance neither of us ever wanted. For my part in hurting you, causing misunderstandings, or bringing any of this pain, I am truly and deeply sorry from the bottom of my heart.
+        </div>
+
+        <div class="letter-paragraph">
+          It hurts to feel your words change and your behaviour grow distant, but no matter how far away you seem right now, I still love the Shubhangi who used to be by my side—laughing without hesitation and teasing each other like nothing else in the world mattered.
+        </div>
+
+        <div class="letter-paragraph">
+          I hold zero grudges against you—only love, respect, and deep gratitude for every single moment we have shared. I don’t know if or when you will find it in your heart to forgive me, and I won’t pressure you or rush your feelings, but please know that my heart will always love and cherish you, no matter what.
+        </div>
+
+        <div class="letter-closing">
+          With all my love and devotion,<br/>
+          <strong>Always Yours ❤️</strong>
+        </div>
+      </div>
+
+      <!-- Fold Back / Close Button -->
+      <button class="parchment-close-btn" onclick="closeUnfoldedLetter()">
+        ← Fold Letter & Return 💌
+      </button>
+    </div>
+  </div>
+</body>
+</html>
